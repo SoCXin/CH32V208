@@ -1,0 +1,36 @@
+{
+    "type":"SoC",
+    "name":"CH32V208",
+    "title": "WCH CH32V208 SoC",
+    "description":"WCH RISC-V4C BLE SoC",
+    "Core": {
+        "CoreNum": 1,
+        "Core":"RISC-V",
+        "Fmax":144,
+        "DMIPS": 240,
+        "CoreMark": 400
+    },
+    "manufacturer": {
+        "vendor":"WCH",
+        "homepage":"http://www.wch.cn"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SoCXin/CH32V208.git"
+    },
+    "version":"1.0.0",
+    "series":["CH32V208"],
+    "package":["LQFP64M","QFN68","QFN48","QFN28"],
+    "peripheral": ["BLE","ETH","USB","ADC","UART","SPI","LDO","PWM"],
+    "temp": [-40,85],
+    "volt": [2.5,3.3],
+    "ESD": {
+        "HBM": 4000,
+        "CDM": 500
+    },
+    "keywords": [
+        "RISC-V",
+        "WCH",
+        "BLE","ETH","SDIO","CAN","I2C","RTC","SPI"
+    ]
+}
