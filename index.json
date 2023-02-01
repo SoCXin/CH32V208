@@ -1,50 +1,36 @@
 {
-    "type":"MCU",
+    "type":"SoC",
     "name":"CH32V208",
-    "title": "WCH MCU CH32V208",
-    "description":"WCH RISC-V CH32V208 MCU",
-    "version":"1.0.0",
-    "price":[12,16],
+    "title": "WCH CH32V208 SoC",
+    "description":"WCH RISC-V4C BLE SoC",
     "Core": {
-        "num": 1,
-        "type":"RISC-V",
-        "Freq": 144,
-        "DMIPS": 100,
-        "CoreMark": 160
+        "CoreNum": 1,
+        "Core":"RISC-V",
+        "Fmax":144,
+        "DMIPS": 240,
+        "CoreMark": 400
     },
     "manufacturer": {
         "vendor":"WCH",
-        "homepage": "http://www.wch.cn/products/CH32V208.html"
+        "homepage":"http://www.wch.cn"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/SoCXin/CH32V208.git"
     },
-    "series":["CH32V208","CH32V203"],
+    "version":"1.0.0",
+    "series":["CH32V208"],
     "package":["LQFP64M","QFN68","QFN48","QFN28"],
-    "peripheral": ["TIM","ADC","USB","UART","SPI","LDO","PWM"],
-    "PWR": {
-        "VDD": [2800,5000],
-        "Ivdd": 3.5,
-        "LDO": [5000,3300],
-        "rate": 1024
-    },
-    "EMC": {
-        "EFT": 2000,
-        "ESD": 4000
-    },
-    "upload": {
-        "ISP": true,
-        "IAP": true,
-        "SWD": true,
-        "speed": 115200
+    "peripheral": ["BLE","ETH","USB","ADC","UART","SPI","LDO","PWM"],
+    "temp": [-40,85],
+    "volt": [2.5,3.3],
+    "ESD": {
+        "HBM": 4000,
+        "CDM": 500
     },
     "keywords": [
-        "dev-platform",
         "RISC-V",
         "WCH",
-        "CH32V208",
-        "DAC","SDIO","CAN","I2C","RTC","SPI",
-        "3.6V","1.8V"
+        "BLE","ETH","SDIO","CAN","I2C","RTC","SPI"
     ]
 }
