@@ -4,21 +4,21 @@
  * Version            : V1.0.0
  * Date               : 2021/06/06
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- when LV is not enabled in standby mode, RAM 2k and 30K low-power data holding routines:
- This routine demonstrates writing data at the specified location of 2K RAM and 30K RAM,
- and then WFI enters STANDBY sleep mode, through the PA0 (wakeup) pin Input high level
- to exit standby mode, print RAM data after waking up, and test whether RAM is maintained
- data.
-
-*/
+ * when LV is not enabled in standby mode, RAM 2k and 30K data holding routines:
+ * This routine demonstrates writing data at the specified location of 2K RAM and 30K RAM(Applicable to
+ * CH32V20x_D8 and CH32V20x_D8W,CH32V20x_D6 has a 20K RAM data holding option),then WFI enters STANDBY
+ * sleep mode, through the PA0 (wakeup) pin Input high level to exit standby mode, print RAM data after
+ * waking up, and test whether RAM is maintained data.
+ *
+ */
 
 #include "debug.h"
 
@@ -29,7 +29,7 @@
 /*********************************************************************
  * @fn      TestDataWrite
  *
- * @brief   Write 0x11111111 to certain address of 2K RAM and 30K RAM.
+ * @brief   Write data to certain address of 2K RAM and 30K RAM.
  *
  * @return  none
  */
@@ -55,7 +55,7 @@ void TestDataWrite(void)
     {
         *(uint32_t volatile *)(myAddr2+(i<<2)) = 0x33333333;
     }
-    for(i=0;i<10;i++)//Check 30K RAM
+    for(i=0;i<10;i++)//Check 2K RAM
     {
         if((*(uint32_t volatile *)(myAddr2+(i<<2))) != 0x33333333)
         {
@@ -115,24 +115,23 @@ int main(void)
     GPIO_Init(GPIOD, &GPIO_InitStructure);
     GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init(115200);
+    printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 
     /* Delay 1.5s to avoid entering low power mode immediately after reset*/
     Delay_Ms(1500);
-    while(1)
-    {
-        TestDataRead();
-        printf("3.Stop RAM LV Mode Test\r\n");
-        TestDataWrite();
-        PWR_WakeUpPinCmd(ENABLE);
-        PWR_EnterSTANDBYMode_RAM();
-        printf("\r\n3.Out \r\n");
-        printf("\r\n ########## \r\n");
 
-    }
+    TestDataRead();
+    printf("Standby RAM Mode Test\r\n");
+    TestDataWrite();
+    PWR_WakeUpPinCmd(ENABLE);
+    PWR_EnterSTANDBYMode_RAM();
+    while(1);
 }
 

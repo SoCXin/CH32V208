@@ -245,8 +245,6 @@ void Central_Init()
     GAP_SetParamValue(TGAP_CONN_EST_INT_MAX, DEFAULT_MAX_CONNECTION_INTERVAL);
     GAP_SetParamValue(TGAP_CONN_EST_SUPERV_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
 
-    GGS_SetParameter(GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, (uint8_t *)centralDeviceName);
-
     // Setup the GAP Bond Manager
     {
         uint32_t passkey = DEFAULT_PASSCODE;
@@ -269,6 +267,8 @@ void Central_Init()
     // Initialize GATT attributes
     GGS_AddService(GATT_ALL_SERVICES);         // GAP
     GATTServApp_AddService(GATT_ALL_SERVICES); // GATT attributes
+
+    GGS_SetParameter(GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, (uint8_t *)centralDeviceName);
 
     // Setup a delayed profile startup
     tmos_set_event(centralTaskId, START_DEVICE_EVT);
@@ -649,6 +649,24 @@ static void centralEventCB(gapRoleEvent_t *pEvent)
         }
         break;
 
+        case GAP_EXT_ADV_DEVICE_INFO_EVENT:
+        {
+            // Display device addr
+            PRINT("Recv ext adv \n");
+            // Add device to list
+            centralAddDeviceInfo(pEvent->deviceExtAdvInfo.addr, pEvent->deviceExtAdvInfo.addrType);
+        }
+        break;
+
+        case GAP_DIRECT_DEVICE_INFO_EVENT:
+        {
+            // Display device addr
+            PRINT("Recv direct adv \n");
+            // Add device to list
+            centralAddDeviceInfo(pEvent->deviceDirectInfo.addr, pEvent->deviceDirectInfo.addrType);
+        }
+        break;
+
         default:
             break;
     }
@@ -716,7 +734,7 @@ static void centralPasscodeCB(uint8_t *deviceAddr, uint16_t connectionHandle,
     // Display passcode to user
     if(uiOutputs != 0)
     {
-        PRINT("Passcode:%d\n", (int)passcode);
+        PRINT("Passcode:%06d\n", (int)passcode);
     }
     // Send passcode response
     GAPBondMgr_PasscodeRsp(connectionHandle, SUCCESS, passcode);

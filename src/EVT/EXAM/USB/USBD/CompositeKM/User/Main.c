@@ -38,7 +38,8 @@
  */
 int main(void)
 {   
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init( 115200 );
     printf("SystemClk:%d\r\n",SystemCoreClock);

@@ -2,21 +2,21 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2024/10/25
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- CAN test mode, including silent mode, loopback mode and loopback silent mode:
- CAN_Tx(PB9),CAN_Rx(PB8)
- Standard_Frame:Including one 32bit filter mask bit pattern.
-
-*/
+ *CAN test mode, including silent mode, loopback mode and loopback silent mode:
+ *CAN_Tx(PB9),CAN_Rx(PB8)
+ *Standard_Frame:Including one 32bit filter mask bit pattern.
+ *
+ */
 
 #include "debug.h"
 
@@ -184,21 +184,23 @@ int main(void)
     u8 txbuf[8];
     u8 rxbuf[8];
 
+    SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
-/* Bps = 333Kbps */
+/* Bps = 250Kbps */
 #if(TEST_MODE == SILENT_MODE)
-    CAN_Test_Mode_Init(CAN_SJW_1tq, CAN_BS2_5tq, CAN_BS1_6tq, 12, CAN_Mode_Silent);
+    CAN_Test_Mode_Init(CAN_SJW_1tq, CAN_BS2_5tq, CAN_BS1_6tq, 16, CAN_Mode_Silent);
     printf("Slient Mode\r\n");
 
 #elif(TEST_MODE == LOOPBACK_MODE)
-    CAN_Test_Mode_Init(CAN_SJW_1tq, CAN_BS2_5tq, CAN_BS1_6tq, 12, CAN_Mode_LoopBack);
+    CAN_Test_Mode_Init(CAN_SJW_1tq, CAN_BS2_5tq, CAN_BS1_6tq, 16, CAN_Mode_LoopBack);
     printf("LoopBack Mode\r\n");
 
 #elif(TEST_MODE == SILENT_LOOPBACK_MODE)
-    CAN_Test_Mode_Init(CAN_SJW_1tq, CAN_BS2_5tq, CAN_BS1_6tq, 12, CAN_Mode_Silent_LoopBack);
+    CAN_Test_Mode_Init(CAN_SJW_1tq, CAN_BS2_5tq, CAN_BS1_6tq, 16, CAN_Mode_Silent_LoopBack);
     printf("Silent_LoopBack Mode\r\n");
 
 #endif
@@ -232,7 +234,7 @@ int main(void)
             printf("Receive Data:\r\n");
 
             for(i = 0; i < 8; i++) {
-                printf("%02x\r\n", txbuf[i]);
+                printf("%02x\r\n", rxbuf[i]);
             }
         }
         else

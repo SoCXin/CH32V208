@@ -4,24 +4,24 @@
  * Version            : V1.0.0
  * Date               : 2021/06/06
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
-PEC error check, master/slave mode transceiver routine:
- I2C1_SCL(PB8)\I2C1_SDA(PB9).
- This example demonstrates that the Master sends with PEC error checking, and the
- Slave receives. If a transmission error occurs, an error interrupt is triggered.
- Note: The two boards download the Master and Slave programs respectively,
- and power on at the same time.
-    Hardware connection:PB8 -- PB8
-                        PB9 -- PB9
-
-*/
+ *PEC error check, master/slave mode transceiver routine:
+ *I2C1_SCL(PB8)\I2C1_SDA(PB9).
+ *This example demonstrates that the Master sends with PEC error checking, and the
+ *Slave receives. If a transmission error occurs, an error interrupt is triggered.
+ *Note: The two boards download the Master and Slave programs respectively,
+ *and power on at the same time.
+ *    Hardware connection:PB8 -- PB8
+ *                        PB9 -- PB9
+ *
+ */
 
 #include "debug.h"
 
@@ -79,7 +79,7 @@ void IIC_Init(u32 bound, u16 address)
 
 #if(I2C_MODE == SLAVE_MODE)
     NVIC_InitStructure.NVIC_IRQChannel = I2C1_ER_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -90,11 +90,6 @@ void IIC_Init(u32 bound, u16 address)
 
     I2C_Cmd(I2C1, ENABLE);
     I2C_CalculatePEC(I2C1, ENABLE);
-
-#if(I2C_MODE == HOST_MODE)
-    I2C_AcknowledgeConfig(I2C1, ENABLE);
-
-#endif
 }
 
 /*********************************************************************
@@ -109,10 +104,12 @@ int main(void)
     u8 i = 0;
     u8 pecValue;
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init(460800);
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
 #if(I2C_MODE == HOST_MODE)
     printf("IIC Host mode\r\n");

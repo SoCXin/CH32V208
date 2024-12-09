@@ -22,7 +22,6 @@
 void NMI_Handler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void HardFault_Handler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void BB_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
-void LLE_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 
 /*********************************************************************
  * @fn      NMI_Handler
@@ -44,6 +43,7 @@ void NMI_Handler(void)
  */
 void HardFault_Handler(void)
 {
+    NVIC_SystemReset();
     while(1)
     {
     }
@@ -59,16 +59,4 @@ void HardFault_Handler(void)
 void BB_IRQHandler(void)
 {
     BB_IRQLibHandler();
-}
-
-/*********************************************************************
- * @fn      LLE_IRQHandler
- *
- * @brief   LLE Interrupt for BLE.
- *
- * @return  None
- */
-void LLE_IRQHandler(void)
-{
-    LLE_IRQLibHandler();
 }

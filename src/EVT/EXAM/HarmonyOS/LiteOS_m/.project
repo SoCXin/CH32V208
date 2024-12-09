@@ -42,5 +42,15 @@
       <type>2</type>
       <location>PARENT-2-PROJECT_LOC/SRC/Debug</location>
     </link>
+    <link>
+      <name>Core</name>
+      <type>2</type>
+      <location>PARENT-2-PROJECT_LOC/SRC/Core</location>
+    </link>
+    <link>
+      <name>Ld</name>
+      <type>2</type>
+      <location>PARENT-2-PROJECT_LOC/SRC/Ld</location>
+    </link>
   </linkedResources>
 </projectDescription>

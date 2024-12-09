@@ -9,8 +9,8 @@
 * Attention: This software (modified or not) and binary are used for 
 * microcontroller manufactured by Nanjing Qinheng Microelectronics.
 *******************************************************************************/
-#ifndef __CH32V20X_USBOTG_DEVICE_H_
-#define __CH32V20X_USBOTG_DEVICE_H_
+#ifndef __CH32V20X_USBFS_DEVICE_H_
+#define __CH32V20X_USBFS_DEVICE_H_
 #ifdef __cplusplus
  extern "C" {
 #endif 
@@ -70,7 +70,7 @@ typedef struct __PACKED _RING_BUFF_COMM
     volatile uint8_t RemainPack;
     volatile uint8_t PackLen[DEF_Ring_Buffer_Max_Blks];
     volatile uint8_t StopFlag;
-} RING_BUFF_COMM, pRING_BUFF_COMM;
+} RING_BUFF_COMM, *pRING_BUFF_COMM;
 
 /* Setup Request Packets */
 #define pUSBFS_SetupReqPak                 ((PUSB_SETUP_REQ)USBFS_EP0_Buf)

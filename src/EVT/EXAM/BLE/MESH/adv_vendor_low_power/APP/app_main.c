@@ -91,11 +91,13 @@ void Main_Circulation(void)
  */
 int main(void)
 {
+    SystemCoreClockUpdate();
     Delay_Init();
 #ifdef DEBUG
     USART_Printf_Init( 115200 );
 #endif
     PRINT("%s\n", VER_LIB);
+    PRINT("%s\n", VER_MESH_LIB);
     WCHBLE_Init();
     HAL_Init();
     bt_mesh_lib_init();

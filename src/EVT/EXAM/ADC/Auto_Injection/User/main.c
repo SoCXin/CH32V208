@@ -2,20 +2,20 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- Automatic injection mode routine:
- ADC channel 1 (PA1) - regular group channel, channel 3 (PA3) - injection group channel
-
-*/
+ *Automatic injection mode routine:
+ *ADC channel 1 (PA1) - regular group channel, channel 3 (PA3) - injection group channel
+ *
+ */
 
 #include "debug.h"
 
@@ -54,6 +54,7 @@ void ADC_Function_Init(void)
     ADC_InitStructure.ADC_NbrOfChannel = 1;
     ADC_Init(ADC1, &ADC_InitStructure);
 
+    ADC_InjectedSequencerLengthConfig(ADC1, 1);
     ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_239Cycles5);
     ADC_InjectedChannelConfig(ADC1, ADC_Channel_3, 1, ADC_SampleTime_239Cycles5);
     ADC_AutoInjectedConvCmd(ADC1, ENABLE);
@@ -119,7 +120,7 @@ u16 Get_ADC_Val(u8 ch)
  */
 u16 Get_ConversionVal(s16 val)
 {
-    if((val + Calibrattion_Val) < 0)
+    if((val + Calibrattion_Val) < 0||val==0)
         return 0;
     if((Calibrattion_Val + val) > 4095||val==4095)
         return 4095;
@@ -138,9 +139,11 @@ int main(void)
     u16 adc_val;
     u16 adc_jval;
 
+    SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     ADC_Function_Init();
     printf("CalibrattionValue:%d\n", Calibrattion_Val);

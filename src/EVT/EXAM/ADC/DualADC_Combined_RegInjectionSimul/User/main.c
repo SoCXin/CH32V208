@@ -2,25 +2,25 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
-  dual ADC combined regular + injection + simultaneous sampling routine:
-  Rule group ADC1 channel 1 (PA1), ADC2 channel 4 (PA4), injection group ADC1
-  channel 3 (PA3) ADC2 channel 5 (PA5))
-  The rule group injection groups are all triggered by software, and the dual ADC
-  rule group data is obtained through the DMA interrupt, and the dual ADC injection
-  group data is obtained through the ADC interrupt.
-
-  Note:only applied to CH32V20x_D6
-*/
+ *dual ADC combined regular + injection + simultaneous sampling routine:
+ *Rule group ADC1 channel 1 (PA1), ADC2 channel 4 (PA4), injection group ADC1
+ *channel 3 (PA3) ADC2 channel 5 (PA5))
+ *The rule group injection groups are all triggered by software, and the dual ADC
+ *rule group data is obtained through the DMA interrupt, and the dual ADC injection
+ *group data is obtained through the ADC interrupt.
+ *
+ *Note:only applied to CH32V20x_D6
+ */
 
 #include "debug.h"
 
@@ -147,7 +147,7 @@ void DMA_Tx_Init(DMA_Channel_TypeDef *DMA_CHx, u32 ppadr, u32 memadr, u16 bufsiz
     DMA_Init(DMA_CHx, &DMA_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -166,7 +166,7 @@ void DMA_Tx_Init(DMA_Channel_TypeDef *DMA_CHx, u32 ppadr, u32 memadr, u16 bufsiz
  */
 u16 Get_ConversionVal1(s16 val)
 {
-    if((val + Calibrattion_Val1) < 0)
+    if((val + Calibrattion_Val1) < 0|| val==0)
         return 0;
     if((Calibrattion_Val1 + val) > 4095||val==4095)
         return 4095;
@@ -201,8 +201,10 @@ u16 Get_ConversionVal2(s16 val)
 int main(void)
 {
     USART_Printf_Init(115200);
+    SystemCoreClockUpdate();
     Delay_Init();
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
     ADC_Function_Init();
     printf("ADC test\r\n");
     printf("CalibrattionValue1:%d\n", Calibrattion_Val1);

@@ -4,7 +4,7 @@
 * Version            : V1.0.0
 * Date               : 2022/08/20
 * Description        : This file contains all the functions prototypes for the
-*                      USBOTG firmware library.
+*                      USBFS firmware library.
 *********************************************************************************
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
 * Attention: This software (modified or not) and binary are used for 
@@ -67,7 +67,7 @@ typedef struct __PACKED _RING_BUFF_COMM
     volatile uint8_t RemainPack;
     volatile uint8_t PackLen[DEF_Ring_Buffer_Max_Blks];
     volatile uint8_t StopFlag;
-} RING_BUFF_COMM, pRING_BUFF_COMM;
+} RING_BUFF_COMM, *pRING_BUFF_COMM;
 
 /* Setup Request Packets */
 #define pUSBFS_SetupReqPak                 ((PUSB_SETUP_REQ)USBFS_EP0_Buf)

@@ -56,19 +56,27 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
  */
 void Set_USBConfig( )
 {
-	if( SystemCoreClock == 144000000 )
+    RCC_ClocksTypeDef RCC_ClocksStatus={0};
+    RCC_GetClocksFreq(&RCC_ClocksStatus);
+    if( RCC_ClocksStatus.SYSCLK_Frequency == 144000000 )
     {
         RCC_USBCLKConfig( RCC_USBCLKSource_PLLCLK_Div3 );
     }
-    else if( SystemCoreClock == 96000000 ) 
+    else if( RCC_ClocksStatus.SYSCLK_Frequency == 96000000 ) 
     {
         RCC_USBCLKConfig( RCC_USBCLKSource_PLLCLK_Div2 );
     }
-    else if( SystemCoreClock == 48000000 ) 
+    else if( RCC_ClocksStatus.SYSCLK_Frequency == 48000000 ) 
     {
         RCC_USBCLKConfig( RCC_USBCLKSource_PLLCLK_Div1 );
     }
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);	 		 
+#if defined(CH32V20x_D8W) || defined(CH32V20x_D8)
+    else if ( RCC_ClocksStatus.SYSCLK_Frequency == 240000000 && RCC_USB5PRE_JUDGE() == SET )
+    {
+        RCC_USBCLKConfig( RCC_USBCLKSource_PLLCLK_Div5 );
+    }
+#endif
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);	 
 }
 
 /*******************************************************************************
@@ -80,13 +88,13 @@ void Set_USBConfig( )
  */
 void Enter_LowPowerMode(void)
 {  
+	bDeviceState = SUSPENDED;
  	printf("usb enter low power mode\r\n");
 	USBD_Sleep_Status |= 0x02;
 	if (USBD_Sleep_Status == 0x03)
 	{
 		MCU_Sleep_Wakeup_Operate();
 	}
-	bDeviceState = SUSPENDED;
 } 
 
 /*******************************************************************************
@@ -119,20 +127,18 @@ void USB_Interrupts_Config(void)
 
 	EXTI_ClearITPendingBit(EXTI_Line18);
 	EXTI_InitStructure.EXTI_Line = EXTI_Line18; 
-	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Event;
 	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;	
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure); 	 
+    
+    EXTI->INTENR |= EXTI_INTENR_MR18;
 
 	NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;	
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
-	
-	NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;  
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_Init(&NVIC_InitStructure);   
 }	
 
 /*******************************************************************************

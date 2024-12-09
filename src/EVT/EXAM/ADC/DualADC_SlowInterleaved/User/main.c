@@ -2,22 +2,22 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
-  dual ADC slow interleaved sampling routine:
- ADC1 channel 1 (PA1), ADC2 channel 1 (PA1)), the rule group channel obtains
- dual ADC conversion data through ADC interrupt.
-
- Note:Only applied to CH32V203
-*/
+ *dual ADC slow interleaved sampling routine:
+ *ADC1 channel 1 (PA1), ADC2 channel 1 (PA1)), the rule group channel obtains
+ *dual ADC conversion data through ADC interrupt.
+ *
+ *Note:Only applied to CH32V203
+ */
 
 #include "debug.h"
 
@@ -55,7 +55,7 @@ void ADC_Function_Init(void)
     ADC_DeInit(ADC2);
 
     NVIC_InitStructure.NVIC_IRQChannel = ADC1_2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -111,7 +111,7 @@ void ADC_Function_Init(void)
  */
 u16 Get_ConversionVal1(s16 val)
 {
-    if((val + Calibrattion_Val1) < 0)
+    if((val + Calibrattion_Val1) < 0|| val==0)
         return 0;
     if((Calibrattion_Val1 + val) > 4095 || val == 4095)
         return 4095;
@@ -146,8 +146,10 @@ u16 Get_ConversionVal2(s16 val)
 int main(void)
 {
     USART_Printf_Init(115200);
+    SystemCoreClockUpdate();
     Delay_Init();
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
     ADC_Function_Init();
     printf("CalibrattionValue1:%d\n", Calibrattion_Val1);
     printf("CalibrattionValue2:%d\n", Calibrattion_Val2);

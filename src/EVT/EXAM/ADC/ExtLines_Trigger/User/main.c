@@ -2,23 +2,23 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- External lines trigger ADC conversion routine:
- ADC channel 1 (PA1) - injection group channel, external trigger pin (PA15) high
- level triggers EXTI line 15 event,In this mode, an ADC conversion is triggered
- by an event on EXTI line 15, and a JEOC interrupt is generated after the conversion
- is completed.
-
-*/
+ *External lines trigger ADC conversion routine:
+ *ADC channel 1 (PA1) - injection group channel, external trigger pin (PA15) high
+ *level triggers EXTI line 15 event,In this mode, an ADC conversion is triggered
+ *by an event on EXTI line 15, and a JEOC interrupt is generated after the conversion
+ *is completed.
+ *
+ */
 
 #include "debug.h"
 
@@ -60,7 +60,7 @@ void ADC_Function_Init(void)
     ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);
 
     NVIC_InitStructure.NVIC_IRQChannel = ADC1_2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -116,7 +116,7 @@ void EXTI_Event_Init(void)
  */
 u16 Get_ConversionVal(s16 val)
 {
-    if((val + Calibrattion_Val) < 0)
+    if((val + Calibrattion_Val) < 0|| val==0)
         return 0;
     if((Calibrattion_Val + val) > 4095 || val==4095)
         return 4095;
@@ -132,8 +132,10 @@ u16 Get_ConversionVal(s16 val)
  */
 int main(void)
 {
+    SystemCoreClockUpdate();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     ADC_Function_Init();
     printf("CalibrattionValue:%d\n", Calibrattion_Val);

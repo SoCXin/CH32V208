@@ -2,24 +2,24 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- low power, standby mode routine:
- WKUP(PA0)
- This routine demonstrates that WFI enters the standby mode, the rising edge of
- the WKUP (PA0) pin exits the standby mode,Program reset after wake-up.
- Note: In order to reduce power consumption as much as possible, it is
- recommended to set the unused GPIO to pull-down mode.
-
-*/
+ *low power, standby mode routine:
+ *WKUP(PA0)
+ *This routine demonstrates that WFI enters the standby mode, the rising edge of
+ *the WKUP (PA0) pin exits the standby mode,Program reset after wake-up.
+ *Note: In order to reduce power consumption as much as possible, it is
+ *recommended to set the unused GPIO to pull-down mode.
+ *
+ */
 
 #include "debug.h"
 
@@ -38,7 +38,7 @@ int main(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure = {0};
 
-    /* 为降低功耗，需将不用的GPIO设置成下拉输入 */
+    /* To reduce power consumption, unused GPIOs need to be set as pull-down inputs */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB|
             RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD|RCC_APB2Periph_GPIOE, ENABLE);
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_All;
@@ -50,11 +50,12 @@ int main(void)
     GPIO_Init(GPIOD, &GPIO_InitStructure);
     GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    SystemCoreClockUpdate();
     Delay_Init();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n", SystemCoreClock);
-
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
     printf("Standby Mode Test\r\n");
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);

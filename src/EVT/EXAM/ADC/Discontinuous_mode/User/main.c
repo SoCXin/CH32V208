@@ -4,21 +4,21 @@
  * Version            : V1.0.0
  * Date               : 2021/06/06
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- Discontinuous mode routine:
- ADC channel 1 (PA1) - injection group channel, channel 3 (PA3) - injection group channel,
- channel 4 (PA4) - injection group channel, this mode
- Next, an ADC conversion is triggered by the TIM1_CC4 event, and the above-mentioned 1 injection
- group channel is converted in sequence each time.
-
-*/
+ *Discontinuous mode routine:
+ *ADC channel 1 (PA1) - injection group channel, channel 3 (PA3) - injection group channel,
+ *channel 4 (PA4) - injection group channel, this mode
+ *Next, an ADC conversion is triggered by the TIM1_CC4 event, and the above-mentioned 1 injection
+ *group channel is converted in sequence each time.
+ *
+ */
 
 #include "debug.h"
 s16 Calibrattion_Val = 0;
@@ -57,7 +57,7 @@ void ADC_Function_Init(void)
     ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
     ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigInjecConv_T1_CC4;
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-    ADC_InitStructure.ADC_NbrOfChannel = 3;
+    ADC_InitStructure.ADC_NbrOfChannel = 1;
     ADC_Init(ADC1, &ADC_InitStructure);
 
     ADC_InjectedSequencerLengthConfig(ADC1, 3);
@@ -133,7 +133,7 @@ void TIM1_PWM_In(u16 arr, u16 psc, u16 ccp)
  */
 u16 Get_ConversionVal(s16 val)
 {
-    if((val + Calibrattion_Val) < 0)
+    if((val + Calibrattion_Val) < 0||val==0)
         return 0;
     if((Calibrattion_Val + val) > 4095||val==4095)
         return 4095;
@@ -149,8 +149,10 @@ u16 Get_ConversionVal(s16 val)
  */
 int main(void)
 {
+    SystemCoreClockUpdate();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     ADC_Function_Init();
     printf("CalibrattionValue:%d\n", Calibrattion_Val);

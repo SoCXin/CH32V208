@@ -24,7 +24,7 @@ const uint8_t  MyDevDescr[ ] =
     0x00,       // bDeviceProtocol
     DEF_USBD_UEP0_SIZE,   // bMaxPacketSize0 64
     (uint8_t)DEF_USB_VID, (uint8_t)(DEF_USB_VID >> 8),  // idVendor 0x1A86
-    (uint8_t)DEF_USB_PID, (uint8_t)(DEF_USB_PID >> 8),  // idProduct 0x5537
+    (uint8_t)DEF_USB_PID, (uint8_t)(DEF_USB_PID >> 8),  // idProduct 0xFE0C
     DEF_IC_PRG_VER, 0x00, // bcdDevice 0.01
     0x01,       // iManufacturer (String Index)
     0x02,       // iProduct (String Index)
@@ -112,7 +112,7 @@ const uint8_t  MyManuInfo[] =
 /* Product Information */
 const uint8_t  MyProdInfo[] =
 {
-    0x12, 0x03, 'C', 0, 'H', 0, '3', 0, '2', 0, 'V', 0, '1', 0
+    0x12, 0x03, 'C', 0, 'H', 0, '3', 0, '2', 0, 'V', 0, '2', 0
               , '0', 0, 'x', 0
 };
 

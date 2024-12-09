@@ -104,7 +104,7 @@ void EXTI0_INT_INIT(void)
 
   NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
@@ -154,10 +154,12 @@ LITE_OS_SEC_TEXT_INIT int main(void)
 {
     unsigned int ret;
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    SystemCoreClockUpdate();
     Delay_Init();
 	USART_Printf_Init(115200);
 	printf("SystemClk:%d\r\n",SystemCoreClock);
+	printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     ret = LOS_KernelInit();
     taskSample();

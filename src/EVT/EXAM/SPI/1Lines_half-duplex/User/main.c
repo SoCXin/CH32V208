@@ -2,27 +2,27 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- single wire half duplex mode, master/slave mode, data transceiver.
- Master:SPI1_SCK(PA5)\SPI1_MOSI(PA7).
- Slave:SPI1_SCK(PA5)\SPI1_MISO(PA6).
- 
- This routine demonstrates that Master sends and Slave receives.
- Note: The two boards download the Master and Slave programs respectively,
- and power on at the same time.
-   Hardware connection:PA5 -- PA5
-                       PA7 -- PA6
- 
-*/
+ *single wire half duplex mode, master/slave mode, data transceiver.
+ *Master:SPI1_SCK(PA5)\SPI1_MOSI(PA7).
+ *Slave:SPI1_SCK(PA5)\SPI1_MISO(PA6).
+ *
+ *This routine demonstrates that Master sends and Slave receives.
+ *Note: The two boards download the Master and Slave programs respectively,
+ *and power on at the same time.
+ *    Hardware connection:PA5 -- PA5
+ *                        PA7 -- PA6
+ *
+ */
 
 #include "debug.h"
 
@@ -93,7 +93,7 @@ void SPI_1Lines_HalfDuplex_Init(void)
 	SPI_Init( SPI1, &SPI_InitStructure );
 
 	NVIC_InitStructure.NVIC_IRQChannel = SPI1_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
@@ -117,10 +117,12 @@ int main(void)
 {
 	u8 i;
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+	SystemCoreClockUpdate();
 	Delay_Init();
 	USART_Printf_Init(115200);
 	printf("SystemClk:%d\r\n",SystemCoreClock);
+	printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
 #if (SPI_MODE == SLAVE_MODE)
 	printf("SLAVE Mode\r\n");

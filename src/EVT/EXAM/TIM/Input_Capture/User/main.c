@@ -2,23 +2,23 @@
  * File Name          : main.c
  * Author             : WCH
  * Version            : V1.0.0
- * Date               : 2021/06/06
+ * Date               : 2023/12/29
  * Description        : Main program body.
-*********************************************************************************
-* Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
-* Attention: This software (modified or not) and binary are used for 
-* microcontroller manufactured by Nanjing Qinheng Microelectronics.
-*******************************************************************************/
+ *********************************************************************************
+ * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
+ * Attention: This software (modified or not) and binary are used for 
+ * microcontroller manufactured by Nanjing Qinheng Microelectronics.
+ *******************************************************************************/
 
 /*
  *@Note
- Input capture routine:
- TIM1_CH1(PA8)
- This example demonstrates the TIM_CH1(PA8) pin floating input, which detects an
- edge transition to trigger a TIM1 capture interrupt,The rising edge triggers the
- TIM_IT_CC1 interrupt, and the falling edge triggers the TIM_IT_CC2 interrupt.
-
-*/
+ *Input capture routine:
+ *TIM1_CH1(PA8)
+ *This example demonstrates the TIM_CH1(PA8) pin floating input, which detects an
+ *edge transition to trigger a TIM1 capture interrupt,The rising edge triggers the
+ *TIM_IT_CC1 interrupt, and the falling edge triggers the TIM_IT_CC2 interrupt.
+ *
+ */
 
 #include "debug.h"
 
@@ -63,7 +63,7 @@ void Input_Capture_Init(u16 arr, u16 psc)
     TIM_PWMIConfig(TIM1, &TIM_ICInitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM1_CC_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -85,8 +85,10 @@ void Input_Capture_Init(u16 arr, u16 psc)
  */
 int main(void)
 {
+    SystemCoreClockUpdate();
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n", SystemCoreClock);
+    printf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
 
     Input_Capture_Init(0xFFFF, 48000 - 1);
 

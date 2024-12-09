@@ -25,6 +25,9 @@ void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
  */
 void NMI_Handler(void)
 {
+  while (1)
+  {
+  }
 }
 /*********************************************************************
  * @fn      TIM2_IRQHandler
@@ -52,6 +55,7 @@ void TIM2_IRQHandler( void )
  */
 void HardFault_Handler(void)
 {
+  NVIC_SystemReset();
   while (1)
   {
   }

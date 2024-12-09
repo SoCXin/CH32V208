@@ -10,7 +10,6 @@
 * microcontroller manufactured by Nanjing Qinheng Microelectronics.
 *******************************************************************************/
 #include "ch32v20x_it.h"
-#include <wchnet.h>
 #include "eth_driver.h"
 
 void NMI_Handler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
@@ -43,6 +42,7 @@ void HardFault_Handler(void)
     printf("mcause:%08x\r\n",__get_MCAUSE());
     printf("mtval:%08x\r\n",__get_MTVAL());
     printf("mepc:%08x\r\n",__get_MEPC());
+    NVIC_SystemReset();
     while (1);
 }
 

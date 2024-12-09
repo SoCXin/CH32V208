@@ -186,7 +186,8 @@ static gapRolesCBs_t heartRatePeripheralCB = {
 // Bond Manager Callbacks
 static gapBondCBs_t heartRateBondCB = {
     NULL, // Passcode callback
-    NULL  // Pairing state callback
+    NULL,  // Pairing state callback
+    NULL  // oob callback
 };
 
 /*********************************************************************
@@ -220,9 +221,6 @@ void HeartRate_Init()
         GAPRole_SetParameter(GAPROLE_SCAN_RSP_DATA, sizeof(scanRspData), scanRspData);
         GAPRole_SetParameter(GAPROLE_ADVERT_DATA, sizeof(advertData), advertData);
     }
-    // Set the GAP Characteristics
-    GGS_SetParameter(GGS_DEVICE_NAME_ATT, GAP_DEVICE_NAME_LEN, attDeviceName);
-
     // Setup the GAP Bond Manager
     {
         uint32_t passkey = 0; // passkey "000000"
@@ -255,6 +253,9 @@ void HeartRate_Init()
     HeartRate_AddService(GATT_ALL_SERVICES);
     DevInfo_AddService();
     Batt_AddService();
+
+    // Set the GAP Characteristics
+    GGS_SetParameter(GGS_DEVICE_NAME_ATT, sizeof(attDeviceName), attDeviceName);
 
     // Register for Heart Rate service callback
     HeartRate_Register(heartRateCB);

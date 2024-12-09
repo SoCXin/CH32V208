@@ -73,17 +73,20 @@ u8 RecData_Deal(void)
          break;
 
      case CMD_IAP_VERIFY:
-         if (Verity_Star_flag == 0) {
-             Verity_Star_flag = 1;
-
-             for (i = 0; i < (256 - CodeLen); i++) {
+         if (Verity_Star_flag == 0) 
+        {
+            Verity_Star_flag = 1;
+          if(CodeLen != 0)
+          {
+             for (i = 0; i < (256 - CodeLen); i++) 
+             {
                  Fast_Program_Buf[CodeLen + i] = 0xff;
              }
-
              FLASH_ErasePage_Fast(Program_addr);
              CH32_IAP_Program(Program_addr, (u32*) Fast_Program_Buf);
              CodeLen = 0;
-         }
+          }
+        }
 
          s = ERR_SCUESS;
          for (i = 0; i < Lenth; i++) {
@@ -104,6 +107,8 @@ u8 RecData_Deal(void)
          Verity_addr = FLASH_Base;
 
          s = ERR_End;
+         FLASH->CTLR |= ((uint32_t)0x00008000);
+         FLASH->CTLR |= ((uint32_t)0x00000080);
          break;
 
      default:

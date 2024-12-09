@@ -7,7 +7,7 @@ PROVIDE( _stack_size = __stack_size );
 
 MEMORY
 {  
-/* CH32V20x_D6 - CH32V203F6-CH32V203G6-CH32V203K6-CH32V203C6 */
+/* CH32V20x_D6 - CH32V203F6-CH32V203G6-CH32V203C6 */
 /*
 	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 32K
 	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 10K
@@ -186,19 +186,19 @@ SECTIONS
 	PROVIDE( _end = _ebss);
 	PROVIDE( end = . );
 
-    /*.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
+    .stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
     {
         PROVIDE( _heap_end = . );   
         . = ALIGN(4);
         PROVIDE(_susrstack = . );
         . = . + __stack_size;
         PROVIDE( _eusrstack = .);
-    } >RAM */
+    } >RAM 
 
-	.stack ORIGIN(RAM)+LENGTH(RAM) :
+	/*.stack ORIGIN(RAM)+LENGTH(RAM) :
 	{
         PROVIDE( _heap_end = . );   
 		. = ALIGN(4);
 		PROVIDE(_eusrstack = . );
-	} >RAM  
+	} >RAM  */
 }

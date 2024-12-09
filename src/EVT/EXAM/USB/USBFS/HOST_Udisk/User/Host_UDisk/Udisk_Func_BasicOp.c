@@ -39,13 +39,13 @@ void UDisk_USBH_ByteOperation( void )
         UDisk_Opeation_Flag = 0;
         printf("CHRV3DiskStatus:%02x\r\n",CHRV3DiskStatus);
         /* 读文件 */
-        strcpy( (char *)mCmdParam.Open.mPathName, "/C51/NEWFILE.C" ); //设置将要操作的文件路径和文件名/C51/NEWFILE.C
+        strcpy( (char *)mCmdParam.Open.mPathName, "/NEWFILE.C" ); //设置将要操作的文件路径和文件名/C51/NEWFILE.C
         ret = CHRV3FileOpen( );                                       //打开文件
         if ( ret == ERR_MISS_DIR || ret == ERR_MISS_FILE )            //没有找到文件
         {
             //创建文件演示
             printf( "Find No File And Create\r\n" );
-            strcpy( (char *)mCmdParam.Create.mPathName, "/C51/NEWFILE.C" );  //新文件名,在根目录下,中文文件名
+            strcpy( (char *)mCmdParam.Create.mPathName, "/NEWFILE.C" );  //新文件名,在根目录下,中文文件名
             ret = CHRV3FileCreate( );                                        //新建文件并打开,如果文件已经存在则先删除后再新建
             mStopIfError( ret );
             printf( "ByteWrite\r\n" );
@@ -93,9 +93,23 @@ void UDisk_USBH_ByteOperation( void )
                 mStopIfError( ret );
                 printf("成功写入 %02X次\r\n",(uint16_t)t);
             }
+
+            //演示修改文件属性
+            printf( "Modify\r\n" );
+            mCmdParam.Modify.mFileAttr = 0xff;   //输入参数: 新的文件属性,为0FFH则不修改
+            mCmdParam.Modify.mFileTime = 0xffff;   //输入参数: 新的文件时间,为0FFFFH则不修改,使用新建文件产生的默认时间
+            mCmdParam.Modify.mFileDate = MAKE_FILE_DATE( 2015, 5, 18 );  //输入参数: 新的文件日期: 2015.05.18
+            mCmdParam.Modify.mFileSize = 0xffffffff;  // 输入参数: 新的文件长度,以字节为单位写文件应该由程序库关闭文件时自动更新长度,所以此处不修改
+            i = CHRV3FileModify( );   //修改当前文件的信息,修改日期
+            mStopIfError( i );
+            printf( "Close\r\n" );
+            mCmdParam.Close.mUpdateLen = 1;     //自动计算文件长度,以字节为单位写文件,建议让程序库关闭文件以便自动更新文件长度
+            i = CHRV3FileClose( );
+            mStopIfError( i );
+
             /* 二、读取文件前N字节 */
             TotalCount = 60;                                                  //设置准备读取总长度100字节
-            strcpy( (char *)mCmdParam.Open.mPathName, "/C51/NEWFILE.C" );     //设置将要操作的文件路径和文件名/C51/NEWFILE.C
+            strcpy( (char *)mCmdParam.Open.mPathName, "/NEWFILE.C" );     //设置将要操作的文件路径和文件名/C51/NEWFILE.C
             CHRV3FileOpen( );                                                 //打开文件
             printf( "读出的前%d个字符是:\r\n",TotalCount );
             while ( TotalCount )
